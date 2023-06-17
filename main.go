@@ -13,7 +13,7 @@ import (
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "9000"
+		port = "9090"
 	}
 
 	router := gin.New()
@@ -23,10 +23,8 @@ func main() {
 		msg := fmt.Sprintf("Api launched successfully")
 		c.JSON(http.StatusOK, gin.H{"message": msg})
 	})
-	err := router.Run(":" + port)
-	if err != nil {
-		return
-	}
+
+	routers.AuthRoutes(router)
 	router.Use(middlewares.Authenticate)
 	routers.UserRoutes(router)
 	routers.FoodRoutes(router)
@@ -35,5 +33,10 @@ func main() {
 	routers.NoteRoutes(router)
 	routers.TableRoutes(router)
 	routers.OrderRoutes(router)
+
+	err := router.Run(":" + port)
+	if err != nil {
+		return
+	}
 
 }

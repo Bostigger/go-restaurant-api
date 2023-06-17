@@ -145,11 +145,11 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	checkEmail, err := usersCollection.CountDocuments(ctx, bson.M{"email": user.Email})
+	checkEmail, err := usersCollection.CountDocuments(ctx, bson.M{"email": *user.Email})
 	if err != nil {
 		return
 	}
-	checkPhone, err := usersCollection.CountDocuments(ctx, bson.M{"phoneNumber": user.PhoneNumber})
+	checkPhone, err := usersCollection.CountDocuments(ctx, bson.M{"phoneNumber": *user.PhoneNumber})
 	if err != nil {
 		return
 	}
@@ -163,15 +163,15 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Phone Number already exists"})
 		return
 	}
-	password := HashPassword(user.Password)
+	password := HashPassword(*user.Password)
 	user.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 	user.ID = primitive.NewObjectID()
 	user.UserId = user.ID.Hex()
-	token, refreshToken, _ := helpers.GenerateAllToken(user.Email, user.Username, user.UserId, user.UserType)
-	user.Token = token
-	user.RefreshToken = refreshToken
-	user.Password = password
+	token, refreshToken, _ := helpers.GenerateAllToken(*user.Email, *user.Username, user.UserId, *user.UserType)
+	user.Token = &token
+	user.RefreshToken = &refreshToken
+	user.Password = &password
 
 	res, err := usersCollection.InsertOne(ctx, user)
 	if err != nil {
@@ -213,18 +213,18 @@ func LoginUser(c *gin.Context) {
 		return
 
 	}
-	passwordCheck, msg := VerifyPassword(user.Password, foundUser.Password)
+	passwordCheck, msg := VerifyPassword(*user.Password, *foundUser.Password)
 	defer cancel()
 	if passwordCheck != true {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": msg})
 		return
 	}
-	if foundUser.Email == "" {
+	if *foundUser.Email == "" {
 		msg := fmt.Sprintf("No user found")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": msg})
 		return
 	}
-	token, refreshToken, _ := helpers.GenerateAllToken(foundUser.Email, foundUser.Username, foundUser.UserId, foundUser.UserType)
+	token, refreshToken, _ := helpers.GenerateAllToken(*foundUser.Email, *foundUser.Username, foundUser.UserId, *foundUser.UserType)
 	helpers.UpdateAllTokens(token, refreshToken, foundUser.UserId)
 	results := usersCollection.FindOne(ctx, bson.M{"userId": foundUser.UserId})
 
