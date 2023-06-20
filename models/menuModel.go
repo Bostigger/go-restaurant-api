@@ -6,12 +6,11 @@ import (
 )
 
 type Menu struct {
-	ID        primitive.ObjectID `bson:"_id" json:"_id"`
-	MenuId    *string            `bson:"menuId" json:"menuId"`
-	FoodId    *string            `bson:"foodId" json:"foodId"`
-	Category  *string            `bson:"category" json:"category"`
-	EndDate   *string            `bson:"endDate" json:"endDate"`
-	StartDate *string            `bson:"startDate" json:"startDate"`
-	CreatedAt time.Time          `bson:"createdAt" json:"createdAt"`
-	UpdatedAt time.Time          `bson:"updatedAt" json:"updatedAt"`
+	ID        primitive.ObjectID `bson:"_id" json:"_id,omitempty" `
+	MenuId    string             `bson:"menuId" json:"menuId,omitempty" validate:"required"`
+	Category  *string            `bson:"category" json:"category" validate:"required"`
+	EndDate   *string            `bson:"endDate" json:"endDate" validate:"required"`
+	StartDate *string            `bson:"startDate" json:"startDate" validate:"required"`
+	CreatedAt time.Time          `bson:"createdAt" json:"createdAt" validate:"required"`
+	UpdatedAt time.Time          `bson:"updatedAt" json:"updatedAt" validate:"required"`
 }

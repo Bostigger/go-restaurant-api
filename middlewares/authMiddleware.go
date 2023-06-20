@@ -17,6 +17,7 @@ func Authenticate(c *gin.Context) {
 	claims, err := helpers.ValidateToken(clientToken)
 	if err != "" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
 	}
 
 	c.Set("username", claims.Username)
