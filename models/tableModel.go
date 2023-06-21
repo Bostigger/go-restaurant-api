@@ -11,7 +11,7 @@ type Table struct {
 	TableType      *string            `bson:"tableType" json:"tableType"`
 	TableNumber    *int               `bson:"tableNumber" json:"tableNumber"`
 	NumberOfGuests *int               `bson:"numberOfGuests" json:"numberOfGuests"`
-	TableId        *string            `bson:"tableId" json:"tableId"`
+	TableId        string             `bson:"tableId" json:"tableId"`
 	CreatedAt      time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt      time.Time          `bson:"updatedAt" json:"updatedAt"`
 }
